@@ -1,5 +1,6 @@
-<script setup lang="ts">
+<script lang="ts">
   import axios from 'axios'
+  import { reactive } from 'vue'
 
   type ImgurImage = {
     id:            string;
@@ -30,30 +31,51 @@
     link:          string;
   }
 
-  const images: ImgurImage[] = [];
-
-  function fetchImages() {
-    axios.get("https://api.imgur.com/3/album/lKLDuiF", {
-      headers: {
-        Authorization: "Client-ID ab142a02ee43a2c"
+  const images = reactive<ImgurImage[]>([])
+  export default {
+    setup() {
+      return{
+        images
       }
-    })
-      .then((response) => {
-        images.push(...response.data.data.images)
+    },
+    mounted() {
+      axios.get("https://api.imgur.com/3/album/lKLDuiF", {
+        headers: {
+          Authorization: "Client-ID ab142a02ee43a2c"
+        }
       })
-      .catch((err) => console.log(err));
+        .then((response) => {
+          images.push(...response.data.data.images)
+        })
+        .catch((err) => {
+          console.log(err)
+        });
+    }
   }
-
-  fetchImages()
 </script>
 
 <template>
-  <div>
-    Hello
+  <div class="title">
+    Chirag's Gallery
   </div>
-  <ul>
-    <li v-for="image in images" :key="image.id">
-      <img :src="image.link" :alt="image.title" />
-    </li>
-  </ul>
+  <div class="image-grid">
+    <img v-for="image in images" :key="image.id" :src="image.link" :alt="image.title" />
+  </div>
 </template>
+
+<style scoped>
+  .title {
+    font-size: 3rem;
+    font-weight: 500;
+  }
+
+  .image-grid {
+    width: 90%;
+    margin: 1rem auto;
+  }
+
+  .image-grid img {
+    width: 30%;
+    margin: calc(10% / 6);
+  }
+</style>
