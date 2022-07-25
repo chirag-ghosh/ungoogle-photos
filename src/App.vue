@@ -75,9 +75,24 @@
     justify-content: space-between;
   }
 
+  @media (max-width: 500px) {
+    .header {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+
   .title {
     font-size: 3rem;
     font-weight: bold;
+  }
+
+  @media (max-width: 500px) {
+    .title {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
   }
 
   .ig-link {
