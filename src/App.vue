@@ -1,6 +1,7 @@
 <script lang="ts">
   import axios from 'axios'
   import { reactive } from 'vue'
+  import MyImage from './components/MyImage.vue'
 
   type ImgurImage = {
     id:            string;
@@ -34,48 +35,58 @@
   const images = reactive<ImgurImage[]>([])
   export default {
     setup() {
-      return{
-        images
-      }
+        return {
+            images
+        };
     },
     mounted() {
-      axios.get("https://api.imgur.com/3/album/lKLDuiF", {
-        headers: {
-          Authorization: "Client-ID ab142a02ee43a2c"
-        }
-      })
-        .then((response) => {
-          images.push(...response.data.data.images)
+        axios.get("https://api.imgur.com/3/album/lKLDuiF", {
+            headers: {
+                Authorization: "Client-ID ab142a02ee43a2c"
+            }
         })
-        .catch((err) => {
-          console.log(err)
+            .then((response) => {
+            images.push(...response.data.data.images);
+        })
+            .catch((err) => {
+            console.log(err);
         });
-    }
-  }
+    },
+    components: { MyImage }
+}
 </script>
 
 <template>
-  <div class="title">
-    Chirag's Gallery
+  <div class="header">
+    <div class="title">Chirag's Gallery</div>
+    <a class="ig-link" href="https://www.instagram.com/unfocusedclicks/" target="_blank">@unfocusedclicks</a>
   </div>
   <div class="image-grid">
-    <img v-for="image in images" :key="image.id" :src="image.link" :alt="image.title" />
+    <MyImage v-for="image in images" :key="image.id" :link="image.link" :name="image.title" :metadata="JSON.parse(image.description)"/>
   </div>
 </template>
 
 <style scoped>
+
+  .header {
+    margin: 2rem auto;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+  }
+
   .title {
     font-size: 3rem;
-    font-weight: 500;
+    font-weight: bold;
+  }
+
+  .ig-link {
+    font-size: 1.8rem;
+    color: #444;
   }
 
   .image-grid {
     width: 90%;
     margin: 1rem auto;
-  }
-
-  .image-grid img {
-    width: 30%;
-    margin: calc(10% / 6);
   }
 </style>
